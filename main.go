@@ -153,6 +153,7 @@ func main() {
         if success {
             if !verbose {
                 fmt.Println(urlWithScheme)
+		WriteFile2(urlWithScheme,outputFile)
             } else {
                 if vj, err := jsoniter.MarshalToString(v); err == nil {
                     fmt.Println(vj)
