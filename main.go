@@ -85,7 +85,9 @@ func main() {
     // Time out flag
     var to int
     flag.IntVar(&to, "t", 9, "Timeout (seconds)")
-
+    //output
+    var outputFile string
+    flag.StringVar(&outputFile, "o", "-", "Output file")
     // Input file flag
     var inputFile string
     flag.StringVar(&inputFile, "i", "-", "Input file (default is stdin)")
@@ -129,6 +131,7 @@ func main() {
         if success {
             if !verbose {
                 fmt.Println(urlWithScheme)
+                WriteFile2(urlWithScheme,outputFile)
             } else {
                 if vj, err := jsoniter.MarshalToString(v); err == nil {
                     fmt.Println(vj)
@@ -273,6 +276,20 @@ func main() {
         }
     }
     wg.Wait()
+}
+func errCheck(err error) {
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
+func WriteFile2(data string, path string) {
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	errCheck(err)
+
+	defer f.Close()
+	_, err = f.WriteString(data + "\n")
+	errCheck(err)
 }
 
 func isWorking(url string, verbose bool) (bool, *verboseStruct, error) {
